@@ -1,426 +1,513 @@
-import { useState, useEffect } from 'react';
-import { Github, Linkedin, Mail, ArrowDown, Code, Terminal, Sparkles, ExternalLink, Menu, X, Award, Briefcase, Users, TrendingUp } from 'lucide-react';
-import profileImg from '../assets/profile.png';
+import { useState, useEffect, useRef } from 'react';
+import { Github, Linkedin, Mail, Code, Terminal, ExternalLink, Menu, X, Moon, Sun, ArrowRight, Sparkles, Zap, Layout, Database, Monitor, Settings, Edit, FileText, File } from 'lucide-react';
+import profile from '/portfolio_pic.png';
 
-// Using a placeholder image - replace with your actual profile image
-
-function Navbar() {
+function Navbar({ darkMode, setDarkMode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [activeSection, setActiveSection] = useState('home');
 
   const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', href: 'home' },
+    { name: 'About', href: 'about' },
+    { name: 'Skills', href: 'skills' },
+    { name: 'Projects', href: 'projects' },
+    { name: 'Contact', href: 'contact' },
   ];
 
+  useEffect(() => {
+    // Scroll listener for Navbar background
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+
+    // Intersection Observer for active section tracking
+    const observerOptions = { threshold: 0.6 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActiveSection(entry.target.id);
+      });
+    }, observerOptions);
+
+    navItems.forEach((item) => {
+      const el = document.getElementById(item.href);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
+  }, []);
+
+  const themeColors = darkMode 
+    ? 'bg-slate-950/90 border-slate-800/50 text-white' 
+    : 'bg-white/90 border-gray-200/50 text-gray-900';
+
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-      isScrolled ? 'bg-slate-950/95 backdrop-blur-xl shadow-lg shadow-blue-500/5 border-b border-white/5' : 'bg-transparent'
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
+      isScrolled ? `${themeColors} backdrop-blur-md py-3 shadow-lg` : 'bg-transparent border-transparent py-5'
     }`}>
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex justify-between items-center">
-          <a href="#home" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <span className="text-white font-bold text-lg">JZC</span>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent hidden sm:block">
-              James Zymon Come
-            </span>
-          </a>
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        {/* Logo */}
+        <a href="#home" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg transition-transform group-hover:scale-110">
+            <Code className="w-5 h-5 text-white" />
+          </div>
+          <span className={`text-xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+            JZC
+          </span>
+        </a>
 
-          <ul className="hidden md:flex gap-8 items-center">
-            {navItems.map((item) => (
-              <li key={item.name}>
-                <a
-                  href={item.href}
-                  className="text-slate-300 hover:text-white transition-colors duration-300 relative group font-medium"
-                >
-                  {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300" />
-                </a>
-              </li>
-            ))}
-            <li>
-              <a
-                href="#contact"
-                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 hover:scale-105"
-              >
-                Hire Me
-              </a>
-            </li>
-          </ul>
-
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-1">
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={`#${item.href}`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                activeSection === item.href
+                  ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20'
+                  : `${darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'} hover:bg-gray-500/10`
+              }`}
+            >
+              {item.name}
+            </a>
+          ))}
+          
+          <div className={`w-[1px] h-6 mx-2 ${darkMode ? 'bg-slate-800' : 'bg-gray-200'}`} />
+          
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
-            aria-label="Toggle menu"
+            onClick={() => setDarkMode(!darkMode)}
+            className={`p-2 rounded-full transition-colors ${darkMode ? 'text-yellow-400 hover:bg-slate-800' : 'text-slate-600 hover:bg-gray-100'}`}
+            aria-label="Toggle theme"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
         </div>
 
-        {isMobileMenuOpen && (
-          <ul className="md:hidden mt-6 space-y-4 pb-4">
-            {navItems.map((item) => (
-              <li key={item.name}>
-                <a
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-slate-300 hover:text-white transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-white/5"
-                >
-                  {item.name}
-                </a>
-              </li>
-            ))}
-            <li>
+        {/* Mobile Toggle */}
+        <button 
+          className="md:hidden p-2"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X className={darkMode ? 'text-white' : 'text-black'} /> : <Menu className={darkMode ? 'text-white' : 'text-black'} />}
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`absolute top-full left-0 w-full p-4 transition-all duration-300 md:hidden ${
+        isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
+      }`}>
+        <ul className={`rounded-2xl p-4 shadow-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-100'}`}>
+          {navItems.map((item) => (
+            <li key={item.name}>
               <a
-                href="#contact"
+                href={`#${item.href}`}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium text-center"
+                className={`block py-3 px-4 rounded-xl mb-1 ${
+                  activeSection === item.href 
+                    ? 'bg-purple-600 text-white' 
+                    : darkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}
               >
-                Hire Me
+                {item.name}
               </a>
             </li>
-          </ul>
-        )}
+          ))}
+        </ul>
       </div>
     </nav>
   );
 }
 
-function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+/**
+ * Hero Component
+ * Improved with high-performance mouse tracking and smooth animations
+ */
+function Hero({ darkMode }) {
   const [isVisible, setIsVisible] = useState(false);
-
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  
   useEffect(() => {
     setIsVisible(true);
     
+    let frameId;
     const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 20 - 10,
-        y: (e.clientY / window.innerHeight) * 20 - 10,
+      // Use requestAnimationFrame for 60fps performance
+      frameId = requestAnimationFrame(() => {
+        setMousePos({ x: e.clientX, y: e.clientY });
       });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(frameId);
+    };
   }, []);
 
   return (
-    <section 
-      id="home" 
-      className="relative min-h-screen flex flex-col justify-center items-center overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900"
+    <section
+      id="home"
+      className={`min-h-screen flex flex-col md:flex-row items-center justify-center relative overflow-hidden pt-20 px-6 transition-colors duration-500 ${
+        darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'
+      }`}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-      
-      <div 
-        className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"
+      {/* Dynamic Background Glow */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-40 transition-opacity duration-1000"
         style={{
-          transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
-          transition: 'transform 0.5s ease-out',
-        }}
-      />
-      <div 
-        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"
-        style={{
-          transform: `translate(${-mousePosition.x}px, ${-mousePosition.y}px)`,
-          transition: 'transform 0.5s ease-out',
-          animationDelay: '1s',
+          background: `radial-gradient(circle 800px at ${mousePos.x}px ${mousePos.y}px, ${
+            darkMode ? 'rgba(124, 58, 237, 0.12)' : 'rgba(147, 51, 234, 0.08)'
+          }, transparent 80%)`,
         }}
       />
 
-      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
-        <div
-          className={`flex justify-center mb-8 transition-all duration-700 ${
-            isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
-          }`}
-        >
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 z-10">
+        {/* Left Content */}
+        <div className={`flex-1 text-center md:text-left transition-all duration-1000 transform ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}>
+          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full mb-6 border ${
+            darkMode ? 'bg-slate-900 border-slate-800 text-purple-400' : 'bg-white border-gray-200 text-purple-600 shadow-sm'
+          }`}>
+            <Sparkles size={14} className="animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-wider">Available for new projects</span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight leading-tight">
+            James Zymon <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">Come</span>
+          </h1>
+
+          <p className={`text-lg md:text-xl mb-8 max-w-lg leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            I build <span className={darkMode ? 'text-white' : 'text-black'}>high-performance</span> web applications with a focus on user experience and clean architecture.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <a href="#projects" className="group px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold shadow-xl shadow-purple-500/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
+              View Projects
+              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+            <a href="#contact" className={`px-8 py-4 rounded-2xl font-bold border-2 transition-all ${
+              darkMode ? 'border-slate-800 hover:bg-slate-900' : 'border-gray-200 hover:bg-white hover:shadow-md'
+            }`}>
+              Let's Talk
+            </a>
+          </div>
+        </div>
+
+        {/* Right Content - Profile Image */}
+        <div className={`flex-1 flex justify-center transition-all duration-1000 delay-300 transform ${
+          isVisible ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
+        }`}>
           <div className="relative group">
-            <img
-              src={profileImg}
-              alt="James Zymon Come"
-              className="w-48 h-48 md:w-56 md:h-56 rounded-full object-cover border-4 border-blue-500/40 shadow-2xl shadow-blue-500/30 group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 to-purple-500/20 blur-2xl -z-10 group-hover:blur-3xl transition-all duration-500" />
-            <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full p-3 border-4 border-slate-950 shadow-lg">
-              <Sparkles className="w-6 h-6 text-white" />
+            {/* Animated Ring */}
+            <div className="absolute -inset-4 bg-gradient-to-tr from-purple-600 to-blue-600 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity animate-spin-slow" />
+            
+            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-3xl overflow-hidden border-4 border-white dark:border-slate-800 shadow-2xl animate-float transform -translate-y-2">
+              <img 
+                src="/portfolio_pic.png" 
+                alt="James Zymon Come" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 scale-150"
+              />
             </div>
           </div>
-        </div>
-
-        <div 
-          className={`inline-flex items-center gap-2 px-5 py-2.5 mb-8 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-full backdrop-blur-sm transition-all duration-700 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
-          }`}
-        >
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-          <span className="text-sm text-green-300 font-medium">Available for Freelance & Full-time</span>
-        </div>
-
-        <h1 
-          className={`text-5xl md:text-7xl lg:text-8xl font-bold mb-6 transition-all duration-700 delay-100 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
-        >
-          <span className="bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
-            James Zymon Come
-          </span>
-        </h1>
-
-        <div 
-          className={`flex flex-wrap items-center justify-center gap-3 mb-6 transition-all duration-700 delay-200 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
-        >
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full backdrop-blur-sm border border-white/10">
-            <Terminal className="w-5 h-5 text-blue-400" />
-            <span className="text-lg md:text-xl text-blue-100 font-medium">Full Stack Developer</span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full backdrop-blur-sm border border-white/10">
-            <Code className="w-5 h-5 text-purple-400" />
-            <span className="text-lg md:text-xl text-purple-100 font-medium">Game Developer</span>
-          </div>
-        </div>
-
-        <p 
-          className={`text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed transition-all duration-700 delay-300 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
-        >
-          Passionate developer crafting innovative digital experiences. Specialized in building scalable web applications and immersive game environments with cutting-edge technologies.
-        </p>
-
-        <div 
-          className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 transition-all duration-700 delay-400 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
-        >
-          <a
-            href="#projects"
-            className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 flex items-center gap-2"
-          >
-            View My Work
-            <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
-          </a>
-          
-          <a
-            href="#contact"
-            className="px-8 py-4 bg-white/10 text-white rounded-xl font-medium hover:bg-white/15 transition-all duration-300 border border-white/20 hover:border-white/30 backdrop-blur-sm flex items-center gap-2"
-          >
-            <Mail className="w-4 h-4" />
-            Get in Touch
-          </a>
-        </div>
-
-        <div 
-          className={`flex gap-4 justify-center transition-all duration-700 delay-500 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
-        >
-          <a
-            href="https://github.com/jameszymoncome"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 border border-white/10 hover:border-white/20 hover:scale-110 backdrop-blur-sm group"
-            aria-label="GitHub"
-          >
-            <Github className="w-6 h-6 text-slate-300 group-hover:text-white transition-colors" />
-          </a>
-          <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 border border-white/10 hover:border-white/20 hover:scale-110 backdrop-blur-sm group"
-            aria-label="LinkedIn"
-          >
-            <Linkedin className="w-6 h-6 text-slate-300 group-hover:text-white transition-colors" />
-          </a>
-          <a
-            href="mailto:zymoncome14@gmail.com"
-            className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 border border-white/10 hover:border-white/20 hover:scale-110 backdrop-blur-sm group"
-            aria-label="Email"
-          >
-            <Mail className="w-6 h-6 text-slate-300 group-hover:text-white transition-colors" />
-          </a>
         </div>
       </div>
     </section>
   );
 }
 
-function About() {
+export { Navbar, Hero };
+
+function About({ darkMode }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   const stats = [
-    { icon: Award, label: 'Years Experience', value: '3+' },
-    { icon: Briefcase, label: 'Projects Completed', value: '15+' },
-    { icon: Users, label: 'Happy Clients', value: '10+' },
-    { icon: TrendingUp, label: 'Success Rate', value: '98%' },
+    { value: '3+', label: 'Years Experience', icon: Zap },
+    { value: '15+', label: 'Projects Completed', icon: Layout },
+    { value: '10+', label: 'Happy Clients', icon: Sparkles },
+    { value: '98%', label: 'Success Rate', icon: Terminal }
   ];
 
   return (
-    <section id="about" className="py-20 bg-slate-900 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-      
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            About Me
+    <section 
+      ref={sectionRef}
+      id="about" 
+      className={`py-32 transition-colors duration-300 relative overflow-hidden ${
+        darkMode ? 'bg-slate-900' : 'bg-gray-50'
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <div className={`transition-all duration-1000 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+        }`}>
+          <div className="flex items-center gap-3 mb-4">
+            <div className={`h-1 w-12 rounded-full ${
+              darkMode ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gradient-to-r from-purple-500 to-blue-500'
+            }`} />
+            <span className={`text-sm font-semibold tracking-wider uppercase ${
+              darkMode ? 'text-purple-400' : 'text-purple-600'
+            }`}>About Me</span>
+          </div>
+          
+          <h2 
+            className={`text-5xl md:text-6xl font-bold mb-16 tracking-tight ${
+              darkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            Turning Vision Into Reality
           </h2>
-          <p className="text-slate-400 text-lg">Get to know me better</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-          <div className="space-y-6">
-            <p className="text-slate-300 text-lg leading-relaxed">
-              I'm a passionate Full Stack Developer and Game Developer with a strong focus on creating elegant, efficient, and user-centered digital solutions. With expertise spanning web technologies and game development, I bring ideas to life through code.
+        <div className="grid md:grid-cols-2 gap-12 mb-16">
+          <div className={`space-y-6 transition-all duration-1000 delay-200 ${
+            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'
+          }`}>
+            <p className={`text-lg leading-relaxed ${
+              darkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              I'm a passionate Full Stack Developer with a strong focus on creating elegant, efficient, and user-centered digital solutions. With expertise spanning web technologies, I bring ideas to life through code.
             </p>
-            <p className="text-slate-300 text-lg leading-relaxed">
+            <p className={`text-lg leading-relaxed ${
+              darkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>
               My journey in development started with a curiosity for how things work, which evolved into a career dedicated to building impactful applications. I specialize in React, Node.js, and Unreal Engine, combining creativity with technical expertise.
             </p>
-            <p className="text-slate-300 text-lg leading-relaxed">
-              When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, or working on game prototypes. I believe in continuous learning and staying ahead of industry trends.
+          </div>
+          
+          <div className={`space-y-6 transition-all duration-1000 delay-400 ${
+            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'
+          }`}>
+            <p className={`text-lg leading-relaxed ${
+              darkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>
+              When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects. I believe in continuous learning and staying ahead of industry trends.
             </p>
-            <div className="flex flex-wrap gap-4 pt-4">
-              <a
-                href="#contact"
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 hover:scale-105"
-              >
-                Let's Talk
-              </a>
-              <a
-                href="#"
-                className="px-6 py-3 bg-white/5 text-white rounded-lg font-medium hover:bg-white/10 transition-all duration-300 border border-white/10 hover:border-white/20"
-              >
-                Download CV
-              </a>
+            <div className={`p-6 rounded-2xl border ${
+              darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-gray-200'
+            }`}>
+              <p className={`text-base italic ${
+                darkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                "Code is like humor. When you have to explain it, it's bad." - Cory House
+              </p>
             </div>
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            {stats.map((stat, idx) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={idx}
-                  className="p-6 bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-all duration-300 hover:scale-105 text-center"
-                >
-                  <div className="flex justify-center mb-3">
-                    <div className="p-3 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg">
-                      <Icon className="w-6 h-6 text-blue-400" />
-                    </div>
-                  </div>
-                  <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-slate-400 text-sm">{stat.label}</div>
-                </div>
-              );
-            })}
-          </div>
+        <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 transition-all duration-1000 delay-600 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+        }`}>
+          {stats.map((stat, idx) => (
+            <div
+              key={idx}
+              className={`p-6 rounded-2xl transition-all duration-300 hover:scale-105 ${
+                darkMode 
+                  ? 'bg-slate-800/50 border border-slate-700 hover:border-purple-500/50' 
+                  : 'bg-white border border-gray-200 hover:border-purple-500/50 shadow-sm'
+              }`}
+            >
+              <stat.icon className={`w-8 h-8 mb-3 ${
+                darkMode ? 'text-purple-400' : 'text-purple-600'
+              }`} />
+              <div className={`text-4xl font-bold mb-2 ${
+                darkMode ? 'text-white' : 'text-gray-900'
+              }`}>{stat.value}</div>
+              <div className={`text-sm ${
+                darkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function Skills() {
+function Skills({ darkMode }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const skillCategories = [
     {
-      title: 'Frontend Development',
+      title: 'Front-End Development',
+      icon: Layout,
+      color: darkMode ? 'from-purple-600 to-pink-600' : 'from-purple-500 to-pink-500',
       skills: [
-        { name: 'React', level: 90 },
-        { name: 'JavaScript', level: 85 },
-        { name: 'TypeScript', level: 80 },
-        { name: 'Tailwind CSS', level: 90 },
-        { name: 'HTML/CSS', level: 95 },
+        { name: 'HTML', icon: FileText },
+        { name: 'CSS', icon: Monitor },
+        { name: 'JavaScript', icon: Terminal },
+        { name: 'React', icon: Layout },
+        { name: 'Node.js', icon: Terminal },
       ],
-      color: 'from-blue-500 to-cyan-500',
-      icon: '⚛️'
     },
     {
-      title: 'Backend Development',
+      title: 'Programming Languages',
+      icon: Terminal,
+      color: darkMode ? 'from-blue-600 to-cyan-600' : 'from-blue-500 to-cyan-500',
       skills: [
-        { name: 'Node.js', level: 85 },
-        { name: 'PHP', level: 80 },
-        { name: 'Python', level: 75 },
-        { name: 'Express', level: 85 },
-        { name: 'RESTful APIs', level: 90 },
+        { name: 'Java', icon: Terminal },
+        { name: 'JavaScript', icon: Terminal },
+        { name: 'Python', icon: Terminal },
+        { name: 'Visual Basic', icon: Terminal },
+        { name: 'PHP', icon: Terminal },
       ],
-      color: 'from-green-500 to-emerald-500',
-      icon: '🔧'
     },
     {
-      title: 'Database & Cloud',
+      title: 'Databases',
+      icon: Database,
+      color: darkMode ? 'from-green-600 to-emerald-600' : 'from-green-500 to-emerald-500',
       skills: [
-        { name: 'MySQL', level: 85 },
-        { name: 'MongoDB', level: 80 },
-        { name: 'Firebase', level: 75 },
-        { name: 'PostgreSQL', level: 70 },
+        { name: 'MySQL', icon: Database },
+        { name: 'MongoDB', icon: Database },
       ],
-      color: 'from-orange-500 to-red-500',
-      icon: '💾'
     },
     {
-      title: 'Game Development',
+      title: 'Tools & Platforms',
+      icon: Settings,
+      color: darkMode ? 'from-yellow-600 to-orange-600' : 'from-yellow-500 to-orange-500',
       skills: [
-        { name: 'Unreal Engine', level: 85 },
-        { name: 'Blueprint', level: 90 },
-        { name: 'C++', level: 75 },
-        { name: '3D Modeling', level: 70 },
+        { name: 'Android Studio', icon: Monitor },
+        { name: 'VS Code', icon: Monitor },
+        { name: 'GitHub', icon: File },
+        { name: 'Firebase', icon: Terminal },
       ],
-      color: 'from-purple-500 to-pink-500',
-      icon: '🎮'
+    },
+    {
+      title: 'Design Tools',
+      icon: Edit,
+      color: darkMode ? 'from-pink-600 to-red-600' : 'from-pink-500 to-red-500',
+      skills: [
+        { name: 'Figma', icon: Edit },
+        { name: 'Canva', icon: Edit },
+        { name: 'Adobe Premiere Pro', icon: Edit },
+        { name: 'Adobe After Effects', icon: Edit },
+        { name: '3ds Max', icon: Edit },
+        { name: 'CapCut', icon: Edit },
+        { name: 'Unreal Engine', icon: Edit },
+      ],
+    },
+    {
+      title: 'Office Applications',
+      icon: FileText,
+      color: darkMode ? 'from-indigo-600 to-purple-600' : 'from-indigo-500 to-purple-500',
+      skills: [
+        { name: 'Word', icon: FileText },
+        { name: 'Excel', icon: FileText },
+        { name: 'PowerPoint', icon: FileText },
+      ],
     },
   ];
 
   return (
-    <section id="skills" className="py-20 bg-gradient-to-b from-slate-900 to-slate-950 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-      
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Skills & Expertise
+    <section
+      ref={sectionRef}
+      id="skills"
+      className={`py-32 transition-colors duration-300 relative overflow-hidden ${
+        darkMode ? 'bg-slate-950' : 'bg-white'
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <div
+          className={`transition-all duration-1000 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+          }`}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className={`h-1 w-12 rounded-full ${
+                darkMode
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600'
+                  : 'bg-gradient-to-r from-purple-500 to-blue-500'
+              }`}
+            />
+            <span
+              className={`text-sm font-semibold tracking-wider uppercase ${
+                darkMode ? 'text-purple-400' : 'text-purple-600'
+              }`}
+            >
+              Expertise
+            </span>
+          </div>
+
+          <h2
+            className={`text-5xl md:text-6xl font-bold mb-16 tracking-tight ${
+              darkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            Skills & Technologies
           </h2>
-          <p className="text-slate-400 text-lg">Technologies and tools I master</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {skillCategories.map((category, idx) => (
             <div
               key={idx}
-              className="group p-8 bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/10"
+              className={`p-8 rounded-2xl transition-all duration-700 hover:scale-105 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+              } ${
+                darkMode
+                  ? 'bg-slate-900 border border-slate-800 hover:border-slate-700'
+                  : 'bg-gray-50 border border-gray-200 hover:border-gray-300'
+              }`}
+              style={{ transitionDelay: `${idx * 100}ms` }}
             >
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-4xl">{category.icon}</span>
-                <h3 className={`text-2xl font-bold bg-gradient-to-r ${category.color} bg-clip-text text-transparent`}>
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${category.color}`}>
+                  <category.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3
+                  className={`text-2xl font-bold ${
+                    darkMode ? 'text-white' : 'text-gray-900'
+                  }`}
+                >
                   {category.title}
                 </h3>
               </div>
-              <div className="space-y-4">
+              <div className="flex flex-wrap gap-3">
                 {category.skills.map((skill, skillIdx) => (
-                  <div key={skillIdx}>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-slate-300 font-medium">{skill.name}</span>
-                      <span className="text-slate-400 text-sm">{skill.level}%</span>
-                    </div>
-                    <div className="w-full bg-slate-700/50 rounded-full h-2.5 overflow-hidden">
-                      <div
-                        className={`h-full bg-gradient-to-r ${category.color} rounded-full transition-all duration-1000 ease-out`}
-                        style={{ width: `${skill.level}%` }}
-                      />
-                    </div>
-                  </div>
+                  <span
+                    key={skillIdx}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      darkMode
+                        ? 'bg-slate-800 text-gray-300 hover:bg-slate-700'
+                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                    }`}
+                  >
+                    <skill.icon className="w-4 h-4" />
+                    {skill.name}
+                  </span>
                 ))}
               </div>
             </div>
@@ -431,94 +518,133 @@ function Skills() {
   );
 }
 
-function Projects() {
+
+function Projects({ darkMode }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const projects = [
     {
-      title: 'PPE Management System for LGU Daet',
-      description: 'Enterprise-grade asset management system for local government units featuring real-time inventory tracking, automated reporting, barcode scanning, and comprehensive audit trails. Built with modern web technologies for optimal performance.',
-      tech: ['React', 'PHP', 'MySQL', 'REST API'],
-      gradient: 'from-blue-500 to-cyan-500',
+      title: 'CNSC RFID Monitoring System',
+      description:
+        'Developed an IoT-based monitoring system using RFID technology to enhance vehicle tracking and campus security at Camarines Norte State College.',
+      tech: ['HTML', 'CSS', 'JavaScript', 'PHP'],
       link: '#',
-      featured: true
+      gradient: 'from-purple-600 to-blue-600',
     },
     {
-      title: 'E-Commerce Platform',
-      description: 'Full-stack online shopping platform with secure payment gateway integration, real-time order tracking, inventory management dashboard, and customer analytics. Handles 1000+ concurrent users.',
-      tech: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      gradient: 'from-purple-500 to-pink-500',
+      title: 'Bicolicious',
+      description:
+        'Created a mobile application dedicated to Bicolano culinary heritage, providing video tutorials and authentic local recipes.',
+      tech: ['Android Studio'],
       link: '#',
-      featured: true
+      gradient: 'from-orange-600 to-red-600',
     },
     {
-      title: 'Game Analytics Dashboard',
-      description: 'Real-time analytics platform for Unreal Engine games tracking player behavior, performance metrics, engagement statistics, and monetization data. Processes millions of events daily.',
-      tech: ['React', 'Unreal Engine', 'PostgreSQL', 'WebSocket'],
-      gradient: 'from-orange-500 to-red-500',
+      title: 'PPE Management System',
+      description:
+        'Developed an inventory management system with NFC integration to streamline asset tracking and monitoring for LGU Daet.',
+      tech: ['Vite React', 'Node.js', 'PHP', 'Arduino', 'MySQL'],
       link: '#',
-      featured: false
-    },
-    {
-      title: 'Task Management SaaS',
-      description: 'Cloud-based project management tool with team collaboration features, automated workflows, time tracking, and integration with popular development tools.',
-      tech: ['React', 'Node.js', 'Firebase', 'TypeScript'],
-      gradient: 'from-green-500 to-emerald-500',
-      link: '#',
-      featured: false
-    },
-    {
-      title: 'AI Content Generator',
-      description: 'AI-powered content creation platform leveraging machine learning to generate marketing copy, blog posts, and social media content with SEO optimization.',
-      tech: ['React', 'Python', 'TensorFlow', 'OpenAI'],
-      gradient: 'from-indigo-500 to-purple-500',
-      link: '#',
-      featured: false
-    },
-    {
-      title: 'Real-time Chat Application',
-      description: 'Scalable messaging platform with end-to-end encryption, file sharing, video calls, and group chat functionality. Supports thousands of concurrent connections.',
-      tech: ['React', 'Node.js', 'Socket.io', 'WebRTC'],
-      gradient: 'from-pink-500 to-rose-500',
-      link: '#',
-      featured: false
+      gradient: 'from-blue-600 to-cyan-600',
     },
   ];
 
   return (
-    <section id="projects" className="py-20 bg-slate-950">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+    <section
+      ref={sectionRef}
+      id="projects"
+      className={`py-32 transition-colors duration-300 ${
+        darkMode ? 'bg-slate-900' : 'bg-gray-50'
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-6">
+        <div
+          className={`transition-all duration-1000 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+          }`}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className={`h-1 w-12 rounded-full ${
+                darkMode
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600'
+                  : 'bg-gradient-to-r from-purple-500 to-blue-500'
+              }`}
+            />
+            <span
+              className={`text-sm font-semibold tracking-wider uppercase ${
+                darkMode ? 'text-purple-400' : 'text-purple-600'
+              }`}
+            >
+              Portfolio
+            </span>
+          </div>
+
+          <h2
+            className={`text-5xl md:text-6xl font-bold mb-16 tracking-tight ${
+              darkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
             Featured Projects
           </h2>
-          <p className="text-slate-400 text-lg">Showcasing my best work and achievements</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           {projects.map((project, idx) => (
             <div
               key={idx}
-              className="group relative bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden hover:border-slate-600 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/10"
+              className={`group relative p-8 rounded-2xl transition-all duration-700 hover:scale-105 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+              } ${
+                darkMode
+                  ? 'bg-slate-950 border border-slate-800 hover:border-slate-700'
+                  : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-xl'
+              }`}
+              style={{ transitionDelay: `${idx * 150}ms` }}
             >
-              {project.featured && (
-                <div className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold rounded-full z-10">
-                  Featured
-                </div>
-              )}
-              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${project.gradient}`} />
-              
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">
+              <div
+                className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+              />
+
+              <div className="relative z-10">
+                <h3
+                  className={`text-2xl font-bold mb-3 ${
+                    darkMode ? 'text-white' : 'text-gray-900'
+                  }`}
+                >
                   {project.title}
                 </h3>
-                <p className="text-slate-400 mb-4 leading-relaxed text-sm">
+
+                <p
+                  className={`text-base mb-5 leading-relaxed ${
+                    darkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}
+                >
                   {project.description}
                 </p>
-                
-                <div className="flex flex-wrap gap-2 mb-4">
+
+                <div className="flex flex-wrap gap-3 mb-6">
                   {project.tech.map((tech, techIdx) => (
                     <span
                       key={techIdx}
-                      className="px-2.5 py-1 bg-slate-700/50 text-slate-300 rounded-md text-xs border border-slate-600/50 hover:border-slate-500 transition-colors"
+                      className={`text-sm px-3 py-1 rounded-lg ${
+                        darkMode
+                          ? 'bg-slate-800 text-gray-300'
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
                     >
                       {tech}
                     </span>
@@ -527,146 +653,123 @@ function Projects() {
 
                 <a
                   href={project.link}
-                  className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors group/link font-medium"
+                  className={`inline-flex items-center gap-2 text-sm font-medium transition-all ${
+                    darkMode
+                      ? 'text-purple-400 hover:text-purple-300'
+                      : 'text-purple-600 hover:text-purple-700'
+                  }`}
                 >
-                  View Details
-                  <ExternalLink className="w-4 h-4 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform" />
+                  View Project
+                  <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <a
-            href="https://github.com/jameszymoncome"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition-all duration-300 border border-white/10 hover:border-white/20"
-          >
-            <Github className="w-5 h-5" />
-            View All Projects on GitHub
-            <ExternalLink className="w-4 h-4" />
-          </a>
         </div>
       </div>
     </section>
   );
 }
 
-function Contact() {
+function Contact({ darkMode }) {
   return (
-    <section id="contact" className="py-20 bg-gradient-to-b from-slate-950 to-slate-900 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-      
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Let's Build Something Amazing
-          </h2>
-          <p className="text-slate-400 text-lg">Have a project in mind? Let's discuss how I can help bring your ideas to life</p>
-        </div>
+    <section
+      id="contact"
+      className={`py-32 transition-colors duration-300 ${
+        darkMode ? 'bg-slate-950' : 'bg-white'
+      }`}
+    >
+      <div className="max-w-4xl mx-auto px-6">
+        <h2
+          className={`text-5xl md:text-6xl font-bold mb-16 tracking-tight ${
+            darkMode ? 'text-white' : 'text-gray-900'
+          }`}
+        >
+          Get in Touch
+        </h2>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
+        <p className={`text-lg leading-relaxed mb-12 ${
+          darkMode ? 'text-gray-400' : 'text-gray-600'
+        }`}>
+          I'm currently available for freelance work and open to discussing new
+          opportunities. Let’s build something meaningful together.
+        </p>
+
+        <div className="space-y-6">
           <a
             href="mailto:zymoncome14@gmail.com"
-            className="group p-8 bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/10"
+            className={`flex items-center gap-3 text-lg transition-colors ${
+              darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'
+            }`}
           >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-4 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-colors">
-                <Mail className="w-7 h-7 text-blue-400" />
-              </div>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Email Me</h3>
-            <p className="text-slate-400 group-hover:text-blue-400 transition-colors font-medium">
-              zymoncome14@gmail.com
-            </p>
+            <Mail className="w-5 h-5" />
+            zymoncome14@gmail.com
           </a>
 
           <a
             href="https://github.com/jameszymoncome"
             target="_blank"
             rel="noopener noreferrer"
-            className="group p-8 bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/10"
+            className={`flex items-center gap-3 text-lg transition-colors ${
+              darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'
+            }`}
           >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-colors">
-                <Github className="w-7 h-7 text-purple-400" />
-              </div>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">GitHub</h3>
-            <p className="text-slate-400 group-hover:text-purple-400 transition-colors font-medium">
-              github.com/jameszymoncome
-            </p>
+            <Github className="w-5 h-5" />
+            GitHub
+          </a>
+
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center gap-3 text-lg transition-colors ${
+              darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <Linkedin className="w-5 h-5" />
+            LinkedIn
           </a>
         </div>
 
-        <div className="text-center mb-12">
-          <p className="text-slate-400 mb-6">Or connect with me on</p>
-          <div className="flex justify-center gap-4">
-            <a
-              href="https://github.com/jameszymoncome"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 bg-slate-800/50 rounded-xl hover:bg-slate-700/50 transition-all duration-300 border border-slate-700/50 hover:border-blue-500/50 hover:scale-110"
-              aria-label="GitHub"
-            >
-              <Github className="w-6 h-6 text-slate-300 hover:text-blue-400 transition-colors" />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 bg-slate-800/50 rounded-xl hover:bg-slate-700/50 transition-all duration-300 border border-slate-700/50 hover:border-blue-500/50 hover:scale-110"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="w-6 h-6 text-slate-300 hover:text-blue-400 transition-colors" />
-            </a>
-            <a
-              href="mailto:zymoncome14@gmail.com"
-              className="p-4 bg-slate-800/50 rounded-xl hover:bg-slate-700/50 transition-all duration-300 border border-slate-700/50 hover:border-blue-500/50 hover:scale-110"
-              aria-label="Email"
-            >
-              <Mail className="w-6 h-6 text-slate-300 hover:text-blue-400 transition-colors" />
-            </a>
-          </div>
-        </div>
-
-        <div className="p-8 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl border border-blue-500/20 backdrop-blur-sm">
-          <h3 className="text-2xl font-bold text-white mb-4 text-center">Ready to Start Your Project?</h3>
-          <p className="text-slate-300 text-center mb-6">
-            I'm currently available for freelance work and open to discussing new opportunities. Let's create something extraordinary together.
+        <div className={`text-center mt-32 pt-8 border-t ${
+          darkMode ? 'border-slate-800 text-gray-600' : 'border-gray-200 text-gray-400'
+        }`}>
+          <p className="text-sm font-light">
+            © 2026 James Zymon Come
           </p>
-          <div className="flex justify-center">
-            <a
-              href="mailto:zymoncome14@gmail.com"
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
-            >
-              <Mail className="w-5 h-5" />
-              Send Me a Message
-            </a>
-          </div>
         </div>
-      </div>
-
-      <div className="text-center mt-16 pt-8 border-t border-slate-800">
-        <p className="text-slate-500 mb-4">© 2025 James Zymon Come. All rights reserved.</p>
       </div>
     </section>
   );
 }
 
 function Portfolio() {
+  const [darkMode, setDarkMode] = useState(true);
+
+  useEffect(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode !== null) {
+      setDarkMode(savedMode === 'true');
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
   return (
-    <div className="bg-slate-950 overflow-x-hidden">
-      <Navbar />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
+    <div className={`transition-colors duration-300 ${
+      darkMode ? 'bg-slate-950' : 'bg-white'
+    }`}>
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Hero darkMode={darkMode} />
+      <About darkMode={darkMode} />
+      <Skills darkMode={darkMode} />
+      <Projects darkMode={darkMode} />
+      <Contact darkMode={darkMode} />
     </div>
   );
 }
 
 export default Portfolio;
+

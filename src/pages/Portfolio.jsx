@@ -719,7 +719,7 @@ function Contact({ darkMode }) {
           </a>
 
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/james-zymon-come/"
             target="_blank"
             rel="noopener noreferrer"
             className={`flex items-center gap-3 text-lg transition-colors ${

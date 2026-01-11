@@ -1,6 +1,32 @@
 import { useState, useEffect, useRef } from 'react';
 import { Github, Linkedin, Mail, Code, Terminal, ExternalLink, Menu, X, Moon, Sun, ArrowRight, Sparkles, Zap, Layout, Database, Monitor, Settings, Edit, FileText, File } from 'lucide-react';
 import profile from '/portfolio_pic.png';
+import html_pic from '/html.png';
+import css_pic from '/css.png';
+import js_pic from '/JavaScript.png';
+import react_pic from '/react.png';
+import tailwind_pic from '/tailwindcss.png';
+import java from '/java.png';
+import python from '/python.png';
+import php from '/php.png';
+import vb from '/vb.png';
+import mongoDB from '/mongodb.png';
+import mysql from '/mysql.png';
+import firebase from '/firebase.png';
+import github from '/github.png';
+import as from '/as.png';
+import vscode from '/vscode.png';
+import figma from '/figma.png';
+import canva from '/canva.png';
+import adpremiere from '/adpremiere.png';
+import adaftereffects from '/adaftereffects.png';
+import capcut from '/capcut.png';
+import unrealengine from '/unrealengine.png';
+import word from '/word.png';
+import excel from '/excel.png';
+import powerpoint from '/ppt.png';
+import dsmax from '/3dsmax.jpg';
+import nodejs from '/nodejs.png';
 
 function Navbar({ darkMode, setDarkMode }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +38,7 @@ function Navbar({ darkMode, setDarkMode }) {
     { name: 'About', href: 'about' },
     { name: 'Skills', href: 'skills' },
     { name: 'Projects', href: 'projects' },
+    { name: 'Certifications', href: 'certifications' },
     { name: 'Contact', href: 'contact' },
   ];
 
@@ -21,7 +48,7 @@ function Navbar({ darkMode, setDarkMode }) {
     window.addEventListener('scroll', handleScroll);
 
     // Intersection Observer for active section tracking
-    const observerOptions = { threshold: 0.6 };
+    const observerOptions = { threshold: 0.3 };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) setActiveSection(entry.target.id);
@@ -37,7 +64,7 @@ function Navbar({ darkMode, setDarkMode }) {
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
     };
-  }, []);
+  }, [navItems]);
 
   const themeColors = darkMode 
     ? 'bg-slate-950/90 border-slate-800/50 text-white' 
@@ -290,7 +317,7 @@ function About({ darkMode }) {
             <p className={`text-lg leading-relaxed ${
               darkMode ? 'text-gray-400' : 'text-gray-600'
             }`}>
-              My journey in development started with a curiosity for how things work, which evolved into a career dedicated to building impactful applications. I specialize in React, Node.js, and Unreal Engine, combining creativity with technical expertise.
+              My journey in development started with a curiosity for how things work, which evolved into a career dedicated to building impactful applications. I specialize in React and Node.js, combining creativity with technical expertise.
             </p>
           </div>
           
@@ -314,7 +341,7 @@ function About({ darkMode }) {
           </div>
         </div>
 
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 transition-all duration-1000 delay-600 ${
+        {/* <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 transition-all duration-1000 delay-600 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
         }`}>
           {stats.map((stat, idx) => (
@@ -337,7 +364,7 @@ function About({ darkMode }) {
               }`}>{stat.label}</div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </section>
   );
@@ -360,75 +387,118 @@ function Skills({ darkMode }) {
   }, []);
 
   const skillCategories = [
-    {
-      title: 'Front-End Development',
-      icon: Layout,
-      color: darkMode ? 'from-purple-600 to-pink-600' : 'from-purple-500 to-pink-500',
-      skills: [
-        { name: 'HTML', icon: FileText },
-        { name: 'CSS', icon: Monitor },
-        { name: 'JavaScript', icon: Terminal },
-        { name: 'React', icon: Layout },
-        { name: 'Node.js', icon: Terminal },
-      ],
-    },
-    {
-      title: 'Programming Languages',
-      icon: Terminal,
-      color: darkMode ? 'from-blue-600 to-cyan-600' : 'from-blue-500 to-cyan-500',
-      skills: [
-        { name: 'Java', icon: Terminal },
-        { name: 'JavaScript', icon: Terminal },
-        { name: 'Python', icon: Terminal },
-        { name: 'Visual Basic', icon: Terminal },
-        { name: 'PHP', icon: Terminal },
-      ],
-    },
-    {
-      title: 'Databases',
-      icon: Database,
-      color: darkMode ? 'from-green-600 to-emerald-600' : 'from-green-500 to-emerald-500',
-      skills: [
-        { name: 'MySQL', icon: Database },
-        { name: 'MongoDB', icon: Database },
-      ],
-    },
-    {
-      title: 'Tools & Platforms',
-      icon: Settings,
-      color: darkMode ? 'from-yellow-600 to-orange-600' : 'from-yellow-500 to-orange-500',
-      skills: [
-        { name: 'Android Studio', icon: Monitor },
-        { name: 'VS Code', icon: Monitor },
-        { name: 'GitHub', icon: File },
-        { name: 'Firebase', icon: Terminal },
-      ],
-    },
-    {
-      title: 'Design Tools',
-      icon: Edit,
-      color: darkMode ? 'from-pink-600 to-red-600' : 'from-pink-500 to-red-500',
-      skills: [
-        { name: 'Figma', icon: Edit },
-        { name: 'Canva', icon: Edit },
-        { name: 'Adobe Premiere Pro', icon: Edit },
-        { name: 'Adobe After Effects', icon: Edit },
-        { name: '3ds Max', icon: Edit },
-        { name: 'CapCut', icon: Edit },
-        { name: 'Unreal Engine', icon: Edit },
-      ],
-    },
-    {
-      title: 'Office Applications',
-      icon: FileText,
-      color: darkMode ? 'from-indigo-600 to-purple-600' : 'from-indigo-500 to-purple-500',
-      skills: [
-        { name: 'Word', icon: FileText },
-        { name: 'Excel', icon: FileText },
-        { name: 'PowerPoint', icon: FileText },
-      ],
-    },
-  ];
+  {
+    title: 'Front-End Development',
+    icon: Layout,
+    color: darkMode
+      ? 'from-purple-600 to-pink-600'
+      : 'from-purple-500 to-pink-500',
+    skills: [
+      { name: 'HTML5', logo: html_pic },
+      { name: 'CSS3', logo: css_pic },
+      { name: 'JavaScript (ES6+)', logo: js_pic },
+      { name: 'React.js', logo: react_pic },
+      { name: 'Tailwind CSS', logo: tailwind_pic },
+    ],
+  },
+
+  {
+    title: 'Back-End & Web Development',
+    icon: Code,
+    color: darkMode
+      ? 'from-blue-600 to-indigo-600'
+      : 'from-blue-500 to-indigo-500',
+    skills: [
+      { name: 'Node.js', logo: nodejs },
+      { name: 'PHP', logo: php },
+      { name: 'MySQL', logo: mysql },
+      { name: 'MongoDB', logo: mongoDB },
+      { name: 'Firebase', logo: firebase },
+    ],
+  },
+
+  {
+    title: 'Programming Languages',
+    icon: Terminal,
+    color: darkMode
+      ? 'from-cyan-600 to-blue-600'
+      : 'from-cyan-500 to-blue-500',
+    skills: [
+      { name: 'Java', logo: java },
+      { name: 'Python', logo: python },
+      { name: 'JavaScript', logo: js_pic },
+      { name: 'PHP', logo: php },
+      { name: 'Visual Basic .NET', logo: vb },
+    ],
+  },
+
+  {
+    title: 'Databases',
+    icon: Database,
+    color: darkMode
+      ? 'from-green-600 to-emerald-600'
+      : 'from-green-500 to-emerald-500',
+    skills: [
+      { name: 'MySQL', logo: mysql },
+      { name: 'MongoDB', logo: mongoDB },
+    ],
+  },
+
+  {
+    title: 'Tools & Platforms',
+    icon: Settings,
+    color: darkMode
+      ? 'from-yellow-600 to-orange-600'
+      : 'from-yellow-500 to-orange-500',
+    skills: [
+      { name: 'VS Code', logo: vscode },
+      { name: 'Android Studio', logo: as },
+      { name: 'Git & GitHub', logo: github },
+      { name: 'Firebase Console', logo: firebase },
+    ],
+  },
+
+  {
+    title: 'UI / UX & Creative Tools',
+    icon: Edit,
+    color: darkMode
+      ? 'from-pink-600 to-rose-600'
+      : 'from-pink-500 to-rose-500',
+    skills: [
+      { name: 'Figma', logo: figma },
+      { name: 'Canva', logo: canva },
+      { name: 'Adobe Premiere Pro', logo: adpremiere },
+      { name: 'Adobe After Effects', logo: adaftereffects },
+      { name: 'CapCut', logo: capcut },
+    ],
+  },
+
+  {
+    title: '3D & Game Development',
+    icon: Zap,
+    color: darkMode
+      ? 'from-emerald-600 to-green-600'
+      : 'from-emerald-500 to-green-500',
+    skills: [
+      { name: 'Unreal Engine', logo: unrealengine },
+      { name: '3ds Max', logo: dsmax },
+    ],
+  },
+
+  {
+    title: 'Office Applications',
+    icon: FileText,
+    color: darkMode
+      ? 'from-indigo-600 to-purple-600'
+      : 'from-indigo-500 to-purple-500',
+    skills: [
+      { name: 'Microsoft Word', logo: word },
+      { name: 'Microsoft Excel', logo: excel },
+      { name: 'Microsoft PowerPoint', logo: powerpoint },
+    ],
+  },
+];
+
 
   return (
     <section
@@ -474,7 +544,7 @@ function Skills({ darkMode }) {
           {skillCategories.map((category, idx) => (
             <div
               key={idx}
-              className={`p-8 rounded-2xl transition-all duration-700 hover:scale-105 ${
+              className={`p-8 rounded-2xl transition-all duration-700 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
               } ${
                 darkMode
@@ -483,7 +553,7 @@ function Skills({ darkMode }) {
               }`}
               style={{ transitionDelay: `${idx * 100}ms` }}
             >
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-4 mb-8">
                 <div className={`p-3 rounded-xl bg-gradient-to-br ${category.color}`}>
                   <category.icon className="w-6 h-6 text-white" />
                 </div>
@@ -495,19 +565,34 @@ function Skills({ darkMode }) {
                   {category.title}
                 </h3>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="grid grid-cols-3 gap-4">
                 {category.skills.map((skill, skillIdx) => (
-                  <span
+                  <div
                     key={skillIdx}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-105 ${
                       darkMode
-                        ? 'bg-slate-800 text-gray-300 hover:bg-slate-700'
-                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                        ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700'
+                        : 'bg-white hover:bg-gray-100 border border-gray-200'
                     }`}
                   >
-                    <skill.icon className="w-4 h-4" />
-                    {skill.name}
-                  </span>
+                    {/* Logo Placeholder */}
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-2 ${
+                      darkMode ? 'bg-slate-700' : 'bg-gray-200'
+                    }`}>
+                      {skill.logo ? (
+                        <img src={skill.logo} alt={skill.name} className="w-10 h-10 object-contain" />
+                      ) : (
+                        <Code className={`w-6 h-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+                      )}
+                    </div>
+                    <span
+                      className={`text-sm font-medium text-center ${
+                        darkMode ? 'text-gray-300' : 'text-gray-700'
+                      }`}
+                    >
+                      {skill.name}
+                    </span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -659,9 +744,130 @@ function Projects({ darkMode }) {
                       : 'text-purple-600 hover:text-purple-700'
                   }`}
                 >
-                  View Project
+                  View Details
                   <ExternalLink className="w-4 h-4" />
                 </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Certifications({ darkMode }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const certifications = [
+    {
+      title: 'CSE 2025 Certification',
+      issuer: 'Certified',
+      date: 'October 2025',
+      description: 'Successfully passed the Civil Service Examination 2025',
+      image: '/cse.png',
+    },
+  ];
+
+  return (
+    <section
+      ref={sectionRef}
+      id="certifications"
+      className={`py-32 transition-colors duration-300 relative overflow-hidden ${
+        darkMode ? 'bg-slate-900' : 'bg-gray-50'
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <div className={`transition-all duration-1000 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+        }`}>
+          <div className="flex items-center gap-3 mb-4">
+            <div className={`h-1 w-12 rounded-full ${
+              darkMode ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gradient-to-r from-purple-500 to-blue-500'
+            }`} />
+            <span className={`text-sm font-semibold tracking-wider uppercase ${
+              darkMode ? 'text-purple-400' : 'text-purple-600'
+            }`}>Certifications</span>
+          </div>
+
+          <h2
+            className={`text-5xl md:text-6xl font-bold mb-16 tracking-tight ${
+              darkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            Professional Certifications
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-1 gap-8">
+          {certifications.map((cert, index) => (
+            <div
+              key={index}
+              className={`group transition-all duration-1000 delay-${index * 200} ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+              }`}
+            >
+              <div className={`overflow-hidden rounded-2xl transition-all duration-300 ${
+                darkMode
+                  ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-purple-600'
+                  : 'bg-white hover:bg-gray-50 border border-gray-200 hover:border-purple-400 shadow-md hover:shadow-xl'
+              }`}>
+                <div className="grid md:grid-cols-1 gap-6 p-8">
+                  {/* Image */}
+                  <div className="flex items-center justify-center overflow-hidden rounded-xl">
+                    <img
+                      src={cert.image}
+                      alt={cert.title}
+                      className="w-full h-80 object-cover transform group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex flex-col justify-center">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-purple-600 text-xl">✓</span>
+                      <span className={`text-xs font-bold uppercase tracking-wider ${
+                        darkMode ? 'text-purple-400' : 'text-purple-600'
+                      }`}>Achieved</span>
+                    </div>
+                    
+                    <h3 className={`text-2xl md:text-3xl font-bold mb-2 ${
+                      darkMode ? 'text-white' : 'text-gray-900'
+                    }`}>
+                      {cert.title}
+                    </h3>
+                    
+                    <p className={`text-sm mb-4 ${
+                      darkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}>
+                      {cert.issuer} • {cert.date}
+                    </p>
+                    
+                    <p className={`text-lg leading-relaxed ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      {cert.description}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -766,6 +972,7 @@ function Portfolio() {
       <About darkMode={darkMode} />
       <Skills darkMode={darkMode} />
       <Projects darkMode={darkMode} />
+      <Certifications darkMode={darkMode} />
       <Contact darkMode={darkMode} />
     </div>
   );

@@ -221,7 +221,7 @@ function Hero({ darkMode }) {
           </h1>
 
           <p className={`text-lg md:text-xl mb-8 max-w-lg leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-            I build <span className={darkMode ? 'text-white' : 'text-black'}>high-performance</span> web applications with a focus on user experience and clean architecture.
+            I enjoy building web applications while continuously improving my skills in user experience and clean code practices.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">

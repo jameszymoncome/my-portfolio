@@ -464,7 +464,7 @@ function Education({ darkMode }) {
         <div className="relative">
           {/* Vertical Line */}
           <div className={`absolute left-4 top-0 bottom-0 w-1 ${
-            darkMode ? 'bg-gradient-to-b from-cyan-500 via-purple-500 to-pink-500' : 'bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-400'
+            darkMode ? 'bg-gradient-to-b from-purple-600 via-blue-600 to-indigo-600' : 'bg-gradient-to-b from-purple-500 via-blue-500 to-indigo-500'
           }`} />
 
           {/* Timeline Items */}
@@ -480,16 +480,16 @@ function Education({ darkMode }) {
                 {/* Timeline Dot */}
                 <div className="relative flex items-start gap-8">
                   <div className={`absolute left-0 w-8 h-8 rounded-full border-4 flex items-center justify-center ${
-                    darkMode ? 'bg-slate-950 border-cyan-500' : 'bg-white border-cyan-400'
+                    darkMode ? 'bg-slate-950 border-purple-600' : 'bg-white border-purple-500'
                   } transform -translate-x-2`}>
-                    <div className="w-2 h-2 rounded-full bg-cyan-500" />
+                    <div className={`w-2 h-2 rounded-full ${darkMode ? 'bg-purple-600' : 'bg-purple-500'}`} />
                   </div>
 
                   {/* Content Card */}
-                  <div className={`flex-1 p-6 rounded-xl transition-all duration-300 hover:scale-102 ${
+                  <div className={`flex-1 p-6 rounded-xl transition-all duration-300 hover:scale-105 ${
                     darkMode
-                      ? 'bg-slate-900 border border-slate-800 hover:border-cyan-500/50'
-                      : 'bg-gray-50 border border-gray-200 hover:border-cyan-400/50 shadow-md'
+                      ? 'bg-slate-900 border border-slate-800 hover:border-purple-600/50'
+                      : 'bg-gray-50 border border-gray-200 hover:border-purple-400/50 shadow-md'
                   }`}>
                     <div className="flex items-start justify-between mb-2">
                       <div>

@@ -36,6 +36,7 @@ function Navbar({ darkMode, setDarkMode }) {
   const navItems = [
     { name: 'Home', href: 'home' },
     { name: 'About', href: 'about' },
+    { name: 'Education', href: 'education' },
     { name: 'Skills', href: 'skills' },
     { name: 'Projects', href: 'projects' },
     { name: 'Certifications', href: 'certifications' },
@@ -48,11 +49,15 @@ function Navbar({ darkMode, setDarkMode }) {
     window.addEventListener('scroll', handleScroll);
 
     // Intersection Observer for active section tracking
-    const observerOptions = { threshold: 0.3 };
+    const observerOptions = { threshold: [0, 0.25, 0.5, 0.75, 1] };
     const observer = new IntersectionObserver((entries) => {
+      let maxVisible = { id: '', ratio: 0 };
       entries.forEach((entry) => {
-        if (entry.isIntersecting) setActiveSection(entry.target.id);
+        if (entry.isIntersecting && entry.intersectionRatio > maxVisible.ratio) {
+          maxVisible = { id: entry.target.id, ratio: entry.intersectionRatio };
+        }
       });
+      if (maxVisible.id) setActiveSection(maxVisible.id);
     }, observerOptions);
 
     navItems.forEach((item) => {
@@ -113,12 +118,21 @@ function Navbar({ darkMode, setDarkMode }) {
         </div>
 
         {/* Mobile Toggle */}
-        <button 
-          className="md:hidden p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X className={darkMode ? 'text-white' : 'text-black'} /> : <Menu className={darkMode ? 'text-white' : 'text-black'} />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className={`p-2 rounded-full transition-colors ${darkMode ? 'text-yellow-400 hover:bg-slate-800' : 'text-slate-600 hover:bg-gray-100'}`}
+            aria-label="Toggle theme"
+          >
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <button 
+            className="md:hidden p-2"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className={darkMode ? 'text-white' : 'text-black'} /> : <Menu className={darkMode ? 'text-white' : 'text-black'} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu Overlay */}
@@ -365,6 +379,153 @@ function About({ darkMode }) {
             </div>
           ))}
         </div> */}
+      </div>
+    </section>
+  );
+}
+
+function Education({ darkMode }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const educationHistory = [
+    {
+      period: '2022 - Present',
+      institution: 'Camarines Norte State College',
+      degree: 'Bachelor of Science in Information Technology',
+      honors: null,
+    },
+    {
+      period: '2020 - 2022',
+      institution: 'Camarines Norte Senior High School',
+      degree: 'STEM Strand',
+      honors: 'Graduated with High Honors',
+    },
+    {
+      period: '2016 - 2020',
+      institution: 'Moreno Integrated School',
+      degree: 'High School',
+      honors: 'Graduated with Honors',
+    },
+    {
+      period: '2010 - 2016',
+      institution: 'Daet Elementary School',
+      degree: 'Elementary Education',
+      honors: null,
+    },
+  ];
+
+  return (
+    <section
+      ref={sectionRef}
+      id="education"
+      className={`py-32 transition-colors duration-300 relative overflow-hidden ${
+        darkMode ? 'bg-slate-950' : 'bg-white'
+      }`}
+    >
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
+        <div className={`transition-all duration-1000 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+        }`}>
+          <div className="flex items-center gap-3 mb-4">
+            <div className={`h-1 w-12 rounded-full ${
+              darkMode ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gradient-to-r from-purple-500 to-blue-500'
+            }`} />
+            <span className={`text-sm font-semibold tracking-wider uppercase ${
+              darkMode ? 'text-purple-400' : 'text-purple-600'
+            }`}>Education</span>
+          </div>
+
+          <h2 className={`text-5xl md:text-6xl font-bold mb-16 tracking-tight ${
+            darkMode ? 'text-white' : 'text-gray-900'
+          }`}>
+            Education & Achievements
+          </h2>
+        </div>
+
+        {/* Timeline */}
+        <div className="relative">
+          {/* Vertical Line */}
+          <div className={`absolute left-4 top-0 bottom-0 w-1 ${
+            darkMode ? 'bg-gradient-to-b from-cyan-500 via-purple-500 to-pink-500' : 'bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-400'
+          }`} />
+
+          {/* Timeline Items */}
+          <div className="space-y-8 relative">
+            {educationHistory.map((item, index) => (
+              <div
+                key={index}
+                className={`transition-all duration-1000 ${
+                  isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                }`}
+                style={{ transitionDelay: `${index * 150}ms` }}
+              >
+                {/* Timeline Dot */}
+                <div className="relative flex items-start gap-8">
+                  <div className={`absolute left-0 w-8 h-8 rounded-full border-4 flex items-center justify-center ${
+                    darkMode ? 'bg-slate-950 border-cyan-500' : 'bg-white border-cyan-400'
+                  } transform -translate-x-2`}>
+                    <div className="w-2 h-2 rounded-full bg-cyan-500" />
+                  </div>
+
+                  {/* Content Card */}
+                  <div className={`flex-1 p-6 rounded-xl transition-all duration-300 hover:scale-102 ${
+                    darkMode
+                      ? 'bg-slate-900 border border-slate-800 hover:border-cyan-500/50'
+                      : 'bg-gray-50 border border-gray-200 hover:border-cyan-400/50 shadow-md'
+                  }`}>
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h3 className={`text-xl font-bold ${
+                          darkMode ? 'text-white' : 'text-gray-900'
+                        }`}>
+                          {item.institution}
+                        </h3>
+                        <p className={`text-sm font-medium ${
+                          darkMode ? 'text-cyan-400' : 'text-cyan-600'
+                        }`}>
+                          {item.period}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className={`mb-2 text-sm ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      {item.degree}
+                    </p>
+
+                    {item.honors && (
+                      <p className={`flex items-center gap-2 text-sm font-medium ${
+                        darkMode ? 'text-amber-400' : 'text-amber-600'
+                      }`}>
+                        <span>⭐</span>
+                        {item.honors}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -779,10 +940,10 @@ function Certifications({ darkMode }) {
 
   const certifications = [
     {
-      title: 'CSE 2025 Certification',
-      issuer: 'Certified',
-      date: 'October 2025',
-      description: 'Successfully passed the Civil Service Examination 2025',
+      title: 'Civil Service Examination – Professional Level Passer',
+      issuer: 'Civil Service Commission, Philippines',
+      date: '2025',
+      description: 'Successfully passed the Civil Service Examination at the Professional Level',
       image: '/cse.png',
     },
   ];
@@ -970,6 +1131,7 @@ function Portfolio() {
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
       <Hero darkMode={darkMode} />
       <About darkMode={darkMode} />
+      <Education darkMode={darkMode} />
       <Skills darkMode={darkMode} />
       <Projects darkMode={darkMode} />
       <Certifications darkMode={darkMode} />
